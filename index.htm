@@ -45,7 +45,7 @@
 			}
 
 			function init() {
-				intervalId = setInterval(draw, 150);
+				intervalId = setInterval(draw, 30);
 			};
 
 			function draw() {
@@ -61,7 +61,7 @@
 					frame = 0;
 				}
 
-				var imageFrame = getClippedFrame(frame);
+				var imageFrame = getClippedFrame(Math.round(frame));
 
 				if (imgBackground.complete)
 					context.drawImage(imgBackground, 0, 0);
@@ -72,7 +72,7 @@
 
 			function nextFrame() {
 				if (frame < 3)
-					frame++;
+					frame += .3;
 				else
 					frame = 0;
 			}
