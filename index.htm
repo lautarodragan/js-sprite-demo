@@ -68,14 +68,10 @@
 			}
 
 			function init() {
-				intervalId = setInterval(draw, 30);
-			};
-
-			function clearRect() {
-				context.clearRect(0, 0, canvas.width, canvas.height);
+				intervalId = setInterval(gameLoop, 30);
 			}
 
-			function draw() {
+			function gameLoop() {
 				if (hero.walking) {
 					hero.walk();
 					hero.nextFrame();
@@ -98,6 +94,9 @@
 				
 			}
 
+			function clearRect() {
+				context.clearRect(0, 0, canvas.width, canvas.height);
+			}
 
 			function drawBackground() {
 				if (imgBackground.complete)
@@ -106,7 +105,6 @@
 					clearRect();
 			}
 
-
 			function getClippedFrame(frame) {
 				return [1, 2, 1, 0][frame];
 			}
@@ -114,6 +112,6 @@
 		</script>
 	</head>
 	<body>
-		<canvas id="myCanvas" width="480" height="320"></canvas>
+		<canvas id="myCanvas" width="640" height="480"></canvas>
 	</body>
 </html>
