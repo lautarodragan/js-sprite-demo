@@ -3,7 +3,7 @@
 		<title>Javascript Canvas &ans; Walking Pikachu</title>
 		<script>
 			var canvas, context;
-			var imgSprite = null;
+			var imgSprite = new Image(), imgBackground = new Image();
 			var direction = 0, frame = 0;
 			var intervalId;
 			var spriteW = 32, spriteH = 32;
@@ -12,11 +12,12 @@
 			var x = 0, y = 0;
 			var speed = 5;
 
+			imgSprite.src = "pikachu.png";
+			imgBackground.src = "background.png";
+
 			window.onload = function() {
 				canvas = document.getElementById("myCanvas");
 				context = canvas.getContext("2d");
-				imgSprite = document.getElementById("sprite");	
-				imgBackground = document.getElementById("background");	
 
 				if (imgSprite.complete) {
 					init();
@@ -101,10 +102,6 @@
 		</script>
 	</head>
 	<body>
-		<img id="sprite" src="pikachu.png" style="display: none; " />
-		<img id="background" src="background.png" style="display: none; " />
-
 		<canvas id="myCanvas" width="480" height="320"></canvas>
-
 	</body>
 </html>
