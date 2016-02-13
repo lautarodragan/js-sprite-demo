@@ -80,20 +80,14 @@
 			}
 
 			function walk() {
-				switch (direction) {
-					case 0:
-						y += speed;
-						break;
-					case 1:
-						x -= speed;
-						break;
-					case 2:
-						x += speed;
-						break;
-					case 3:
-						y -= speed;
-						break;
-				}
+
+				var left = function() { x -= speed };
+				var right = function() { x += speed };
+				var up = function() { y -= speed };
+				var down = function() { y += speed };
+
+				[down, left, right, up][direction]();
+
 			}
 
 			function getClippedFrame(frame) {
