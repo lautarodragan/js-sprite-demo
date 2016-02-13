@@ -3,29 +3,50 @@
 		<title>Javascript Canvas &ans; Walking Pikachu</title>
 		<script>
 			var canvas, context;
-			var imgSprite = new Image(), imgBackground = new Image();
-			var direction = 0, frame = 0;
+			var imgBackground = new Image();
 			var intervalId;
-			var spriteW = 32, spriteH = 32;
 			var zoom = 2;
-			var walking = false;
-			var x = 0, y = 0;
-			var speed = 5;
 
-			imgSprite.src = "pikachu.png";
+			var Actor = function() {
+				this.image = new Image();
+				this.imageSource = 'pikachu.png';
+				this.x = 0; 
+				this.y = 0;
+				this.spriteWidth = 32;
+				this.spriteHeight = 32;
+				this.speed = 5;
+				this.isWalking = false;
+				this.direction = 0;
+				this.frame = 0;
+
+				this.nextFrame = function() {
+					if (this.frame < 3)
+						this.frame += .3;
+					else
+						this.frame = 0;
+				};
+
+				this.walk = function() {
+					var down = function() { this.y += this.speed };
+					var left = function() { this.x -= this.speed };
+					var right = function() { this.x += this.speed };
+					var up = function() { this.y -= this.speed };
+
+					[down, left, right, up][this.direction].apply(this);
+				};
+			};
+
+			var hero = new Actor();
+
+			hero.image.src = './' + hero.imageSource;
+
 			imgBackground.src = "background.png";
 
 			window.onload = function() {
 				canvas = document.getElementById("myCanvas");
 				context = canvas.getContext("2d");
 
-				if (imgSprite.complete) {
-					init();
-				} else {
-					imgSprite.addEventListener('load', function() {
-						init();
-					});
-				}
+				init();
 			};
 
 			window.onkeydown = function(key) {
@@ -34,61 +55,57 @@
 				var keys = [37, 38, 39, 40];
 
 				if (keys.indexOf(key.keyCode) != -1) {
-					walking = true;
-					direction = [1, 3, 2, 0][keys.indexOf(key.keyCode)];
+					hero.walking = true;
+					hero.direction = [1, 3, 2, 0][keys.indexOf(key.keyCode)];
 				}
 
 			}
 
 			window.onkeyup = function(key) {
 				console.log("keyup", key, key.keyCode);
-				if (direction == [1, 3, 2, 0][key.keyCode - 37])
-					walking = false;
+				if (hero.direction == [1, 3, 2, 0][key.keyCode - 37])
+					hero.walking = false;
 			}
 
 			function init() {
 				intervalId = setInterval(draw, 30);
 			};
 
-			function draw() {
+			function clearRect() {
 				context.clearRect(0, 0, canvas.width, canvas.height);
+			}
 
-				var spriteOffsetX = spriteW * 3;
-				var imageFrame = 1;
-
-				if (walking) {
-					walk();
-					nextFrame();
+			function draw() {
+				if (hero.walking) {
+					hero.walk();
+					hero.nextFrame();
 				} else {
-					frame = 0;
+					hero.frame = 0;
 				}
 
-				var imageFrame = getClippedFrame(Math.round(frame));
+				drawBackground();
+				drawSprite(hero);
+			}
 
+			function drawSprite(sprite) {
+				if (!sprite.image || !sprite.image.complete)
+					return;
+
+				var imageFrame = 1;
+				var imageFrame = getClippedFrame(Math.round(sprite.frame));
+				var spriteOffsetX = sprite.spriteWidth * 3;
+				context.drawImage(sprite.image, spriteOffsetX + imageFrame * sprite.spriteWidth, sprite.direction * sprite.spriteHeight, sprite.spriteWidth, sprite.spriteHeight, sprite.x, sprite.y, sprite.spriteWidth * zoom, sprite.spriteHeight * zoom);
+				
+			}
+
+
+			function drawBackground() {
 				if (imgBackground.complete)
 					context.drawImage(imgBackground, 0, 0);
-
-				context.drawImage(imgSprite, spriteOffsetX + imageFrame * spriteW, direction * spriteH, spriteW, spriteH, x, y, spriteW * zoom, spriteH * zoom);
-
-			}
-
-			function nextFrame() {
-				if (frame < 3)
-					frame += .3;
 				else
-					frame = 0;
+					clearRect();
 			}
 
-			function walk() {
-
-				var left = function() { x -= speed };
-				var right = function() { x += speed };
-				var up = function() { y -= speed };
-				var down = function() { y += speed };
-
-				[down, left, right, up][direction]();
-
-			}
 
 			function getClippedFrame(frame) {
 				return [1, 2, 1, 0][frame];
