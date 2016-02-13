@@ -42,7 +42,8 @@
 
 			window.onkeyup = function(key) {
 				console.log("keyup", key, key.keyCode);
-				walking = false;
+				if (direction == [1, 3, 2, 0][key.keyCode - 37])
+					walking = false;
 			}
 
 			function init() {
